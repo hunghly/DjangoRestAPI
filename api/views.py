@@ -5,10 +5,18 @@ from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth.models import User
 from .models import Movie, Rating
-from .serializers import MovieSerializer, RatingSerializer
+from .serializers import MovieSerializer, RatingSerializer, UserSerializer
 
 # Create your views here.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all();
+    serializer_class = UserSerializer
+    # authentication_classes = (TokenAuthentication, )
 
+    # @action(detail=True, methods=['POST'])
+    # def register(self, request, pk=None):
+    #     if 'username' in request.data:
+    #         # user = 
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -25,7 +33,7 @@ class MovieViewSet(viewsets.ModelViewSet):
             # Right now we are statically assigning user to id=1 or the first user
             # user = User.objects.get(id=1)
             user = request.user
-            
+
             try:
                 rating = Rating.objects.get(user=user.id, movie=movie.id)
                 rating.stars = stars

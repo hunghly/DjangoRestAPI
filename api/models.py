@@ -10,7 +10,6 @@ class Movie(models.Model):
 
     def no_of_ratings(self):
         ratings = Rating.objects.filter(movie=self)
-        print("something", ratings)
         return len(ratings)
 
     def avg_rating(self):
@@ -18,7 +17,6 @@ class Movie(models.Model):
         ratings = Rating.objects.filter(movie=self)
         for rating in ratings:
             sum += rating.stars
-        
         if (len(ratings) > 0):
             return sum / len(ratings)
         else:
