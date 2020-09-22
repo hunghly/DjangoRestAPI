@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth.models import User
 from .models import Movie, Rating
 from .serializers import MovieSerializer, RatingSerializer
@@ -12,6 +13,7 @@ from .serializers import MovieSerializer, RatingSerializer
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    authentication_classes = (TokenAuthentication, )
 
     # allows us to create custom methods for GET/POST/etc. -The detail attribute allows us to decide if it's a specific model or a list (True = specifc, False = List)
     # Right now, we set the pk to None as default if it's not provided
@@ -21,8 +23,9 @@ class MovieViewSet(viewsets.ModelViewSet):
             movie = Movie.objects.get(id=pk)
             stars = request.data['stars']
             # Right now we are statically assigning user to id=1 or the first user
-            user = User.objects.get(id=1)
-
+            # user = User.objects.get(id=1)
+            user = request.user
+            
             try:
                 rating = Rating.objects.get(user=user.id, movie=movie.id)
                 rating.stars = stars
@@ -42,3 +45,4 @@ class MovieViewSet(viewsets.ModelViewSet):
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    authentication_classes = (TokenAuthentication, )
